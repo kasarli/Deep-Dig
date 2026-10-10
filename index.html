@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ore Empire</title>
+<style>
+:root{--bg:#12141a;--card:#1d212b;--row:#0003;--tx:#eceef4;--mut:#8f98ab;--ac:#ffb703;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#e9ecf2;--card:#fff;--row:#0000000d;--tx:#1b1e26;--mut:#5c6475}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--tx);font:15px system-ui,sans-serif}
+#app{max-width:1000px;margin:auto;padding:12px;display:grid;gap:12px;grid-template-columns:5fr 6fr;align-items:start}
+@media(max-width:760px){#app{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:14px;padding:14px}
+#top{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 26px;justify-content:space-between;align-items:center}
+#top div{color:var(--mut);font-size:13px}#top b{display:block;font-size:22px;color:var(--ac)}
+#mine{background:linear-gradient(160deg,var(--lc,#6b4f3a),#000b);color:#fff;transition:background .8s;position:sticky;top:8px}
+@media(max-width:760px){#mine{position:static}}
+h2{margin:0;font-size:17px}#sub{opacity:.75;font-size:13px;margin:2px 0 10px}
+#dig{width:100%;height:190px;border:0;border-radius:18px;cursor:pointer;background:#0004;color:#fff;font-size:76px;box-shadow:inset 0 0 0 2px #fff3,0 6px 24px #0006;user-select:none;touch-action:manipulation;transition:transform .06s}
+#dig:active{transform:scale(.96)}#dig small{display:block;font-size:14px;margin-top:4px;opacity:.9}
+.bar{height:9px;background:#0005;border-radius:6px;margin:12px 0 4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .2s}
+#nl,#stats{font-size:12.5px;opacity:.8}#stats{margin-top:10px;line-height:1.6}
+.btn{background:#fff2;color:inherit;border:1px solid #fff4;border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:600}.btn:disabled{opacity:.4;cursor:default}
+#pr{width:100%;margin-top:10px;background:var(--ac);color:#111;border:0}#pi{font-size:12px;opacity:.8;margin-top:6px}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.seg{display:flex;gap:4px}.seg button,.tabs button{background:var(--row);color:var(--tx);border:0;border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:600}
+.seg button.on,.tabs button.on{background:var(--ac);color:#111}
+.tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;margin-bottom:7px;background:var(--row)}
+.row .i{font-size:27px;width:34px;text-align:center}.row .t{flex:1;min-width:0}.row small{display:block;color:var(--mut)}.lv{color:var(--mut);font-size:12px}
+button.b{background:var(--ac);color:#111;border:0;border-radius:9px;padding:8px 10px;font-weight:800;cursor:pointer;min-width:92px}
+button.b small{color:#111a;font-weight:600}button.b:disabled{opacity:.35;cursor:default}
+.pn{display:none}.pn.on{display:block}
+.tr{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tr div{background:var(--row);border-radius:10px;padding:9px;opacity:.4;font-size:12.5px}.tr div.got{opacity:1;outline:2px solid var(--ac)}.tr b{display:block;font-size:13.5px}
+#sv{width:100%;height:60px;margin-top:8px;display:none;font-size:11px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);background:#000d;color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;z-index:9;max-width:90vw;text-align:center}#toast.on{opacity:1;transform:translate(-50%,0)}
+#nug{position:fixed;font-size:46px;border:0;background:none;cursor:pointer;animation:pl 1s infinite;z-index:8}
+@keyframes pl{50%{transform:scale(1.25) rotate(8deg)}}
+.fl{position:fixed;pointer-events:none;font-weight:800;color:#fff;text-shadow:0 1px 4px #000;animation:up .8s forwards;z-index:7;transform:translateX(-50%)}.fl.c{color:#ffd23f;font-size:20px}
+@keyframes up{to{transform:translate(-50%,-70px);opacity:0}}
+#fz{display:none;color:#ff7a2f;font-weight:800}
+.card{border-radius:18px;padding:18px;border:1px solid #ffffff0f}
+#dig{height:170px;border-radius:22px;font-size:68px;background:#ffffff14;box-shadow:inset 0 0 0 1px #ffffff26;transition:transform .06s,background .2s}#dig:hover{background:#ffffff22}
+.row{gap:12px;padding:10px 12px;border-radius:12px;margin-bottom:6px}
+.tabs{gap:4px;margin:12px 0;padding:4px;background:var(--row);border-radius:12px}
+.tabs button{flex:1;background:none;color:var(--mut);font-size:13px;padding:7px 4px;transition:.15s}.tabs button.on{background:var(--ac);color:#111}
+.seg{background:var(--row);padding:3px;border-radius:11px}.seg button{background:none;color:var(--mut)}.seg button.on{background:var(--ac);color:#111}
+:root[data-theme=light]{--bg:#e9ecf2;--card:#fff;--row:#0000000d;--tx:#1b1e26;--mut:#5c6475}
+.row input{width:96px;background:var(--row);border:1px solid #8883;border-radius:8px;padding:8px;color:var(--tx)}
+#dv{display:none;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin-top:10px}
+.b2{background:var(--row);color:var(--tx);border:1px solid #8883;border-radius:9px;padding:9px;cursor:pointer;font-weight:600}.b2:hover{border-color:var(--ac)}
+#dvh{display:none;margin:12px 0 0;font-size:12px;color:var(--ac);letter-spacing:.08em;text-transform:uppercase}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;min-height:100vh;background:radial-gradient(900px 500px at 12% -10%,#3b3f6b44,transparent 70%),radial-gradient(700px 400px at 100% 0,#ffb70317,transparent 70%),var(--bg);background-attachment:fixed}
+#top{padding:14px 20px}#top div{font-size:11px;text-transform:uppercase;letter-spacing:.09em}#top b{font-size:25px;font-weight:800;letter-spacing:0;text-transform:none}
+#fz{font-size:12px;line-height:1.5}#news{grid-column:1/-1;padding:10px 16px;font-size:13px;color:var(--mut);text-align:center;transition:opacity .4s;min-height:40px}
+#dig{width:min(100%,240px);height:240px;border-radius:50%;margin:6px auto 4px;display:block;font-size:92px;background:radial-gradient(circle at 35% 28%,#ffffff44,#ffffff0d 62%);box-shadow:0 12px 44px #0008,inset 0 0 0 2px #ffffff30}
+#dig:hover{transform:scale(1.03)}#dig:active{transform:scale(.95)}#dig small{font-size:14px;font-weight:700}
+#ab{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+button.b{background:linear-gradient(180deg,#ffc933,#ffa200);box-shadow:0 2px 0 #b57400;transition:transform .08s}button.b:active:not(:disabled){transform:translateY(1px);box-shadow:none}
+.row{transition:background .15s}.row:hover{background:#ffffff12}#ubd{color:#ff7a2f;font-weight:800}
+@media(min-width:761px){.pn{max-height:68vh;overflow:auto;scrollbar-width:thin;padding-right:4px}}
+.tabs button{font-size:12.5px}
+.tabs{flex-wrap:wrap}.tabs button{min-width:62px}
+#qbox{margin-top:14px}.qh{display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.85;margin-bottom:6px}
+#mine .row{padding:8px 10px;background:#0004}#mine .row small{color:#ffffffb8}#mine .row .i{font-size:20px;width:26px}#mine button.b{min-width:76px}
+#dig{width:min(100%,210px);height:210px;font-size:80px}
+@media(min-width:761px){#mine{max-height:calc(100vh - 16px);overflow:auto;scrollbar-width:none}}
+</style></head><body>
+<div id="app">
+<div class="card" id="top"><div>Ore<b id="ore">0</b></div><div>Depth<b><span id="dep">0</span> m</b></div><div>Per second<b id="ps">0</b></div><div>Gems<b id="gem">0</b></div><div id="fz">🔥 FRENZY ×7<b id="fzt"></b></div></div>
+<div class="card" id="news"></div>
+<section class="card" id="mine">
+<h2 id="lay"></h2><div id="sub"></div>
+<button id="dig"><span id="de">⛏️</span><small id="cp"></small></button>
+<div class="bar"><i id="nb"></i></div><div id="nl"></div>
+<div id="ab"><button class="btn" id="ab1"></button><button class="btn" id="ab2"></button></div><button class="btn" id="pr"></button><div id="pi"></div>
+<div id="qbox"><div class="qh"><span>📋 Quests</span><span id="qinfo"></span></div><div id="p6r"></div></div>
+<div id="stats"></div>
+</section>
+<section class="card" id="store">
+<div class="sh"><h2>Store</h2><div class="seg" id="mm"><button data-m="1">×1</button><button data-m="10">×10</button><button data-m="100">×100</button><button data-m="max">Max</button></div></div>
+<div class="tabs" id="tabs"><button data-t="0">Miners</button><button data-t="5">Boosts<span id="ubd"></span></button><button data-t="1">Tools</button><button data-t="2">Gems</button><button data-t="3">🏆</button><button data-t="4">⚙️</button></div>
+<div class="pn" id="p0"></div><div class="pn" id="p1"></div>
+<div class="pn" id="p2"><div style="color:var(--mut);font-size:13px;margin-bottom:8px">Gems come from Core Resets. Every gem ever earned also gives +5% to everything.</div><div id="p2r"></div></div>
+<div class="pn" id="p3"><div style="color:var(--mut);font-size:13px;margin-bottom:8px">Each trophy gives +2% to everything.</div><div class="tr" id="p3r"></div></div>
+<div class="pn" id="p5"><div class="sh" style="margin-bottom:8px"><span id="uinfo" style="color:var(--mut);font-size:13px"></span><button class="b2" id="uall">Buy all</button></div><div id="p5r"></div></div>
+<div class="pn" id="p4">
+<div class="row"><div class="t"><b>Sound</b><small>Tiny dig and buy sounds</small></div><button class="b" id="sn"></button></div>
+<div class="row"><div class="t"><b>Theme</b><small>Auto follows your device</small></div><button class="b" id="th"></button></div>
+<div class="row"><div class="t"><b>Foreman</b><small>Auto-buys miners (needs the Foreman tool)</small></div><button class="b" id="fm"></button></div>
+<div class="row"><div class="t"><b>Delete save</b><small>Wipes all progress</small></div><button class="b" id="rs">Reset</button></div>
+<div class="row" id="dcr"><div class="t"><b>Developer</b><small>Enter the code for test tools</small></div><input id="dc" placeholder="code" autocomplete="off"><button class="b" id="du">Unlock</button></div>
+<h3 id="dvh">Developer tools</h3><div id="dv"></div></div>
+</section></div>
+<div id="toast"></div>
+<script>
+const $=i=>document.getElementById(i),KEY='dd2';
+const G=[['Intern','🧑‍🔧',1,15],['Drill','🔩',8,100],['Rig','🏗️',50,1100],['Laser','🔦',300,12000],['Reactor','☢️',2e3,1.3e5],['Black Hole','🕳️',1.5e4,1.4e6],['Time Drill','⏳',1e5,2e7],['Planet Cracker','🪐',7.5e5,3.3e8],['Star Forge','⭐',5e6,5.1e9],['Reality Bore','🌀',4e7,7.5e10],['Dimension Drill','🌌',3e8,1.2e12],['Cosmic Hive','🐝',2.5e9,2e13],['Void Harvester','🌑',2e10,3.5e14],['Entropy Engine','♾️',1.7e11,6e15],['Singularity Mine','🔱',1.5e12,1e17],['Omega Excavator','🛸',1.3e13,2e18],['The Last Shovel','🥄',1.5e14,4e19],['Dark Matter Mill','🌠',1.2e15,8e20],['Time Loop Crew','🔁',1.1e16,1.5e22],['Cosmic Egg','🥚',1e17,3e23],['Multiverse Dredger','🧬',9e17,7e24],['The Developer','👨‍💻',1e19,2e26]].map(a=>({n:a[0],e:a[1],r:a[2],c:a[3]}));
+const L=[[0,'Topsoil','🌱','#6b4f3a'],[20,'Clay','🧱','#8a5a3c'],[60,'Stone','🪨','#555b66'],[150,'Coal','⚫','#2b2d33'],[300,'Iron','⛓️','#5f7a92'],[600,'Copper','🟠','#a8602d'],[1e3,'Silver','🥈','#7d8794'],[1600,'Gold','🥇','#9a7b1c'],[2500,'Emerald','💚','#1f7a4d'],[4e3,'Diamond','💎','#1b7f93'],[6e3,'Magma','🌋','#9c2f1a'],[9e3,'Obsidian','⬛','#2a1a3d'],[13e3,'Crystal Caverns','🔮','#5b3aa0'],[2e4,'Mantle','🔥','#b0461a'],[3e4,'Core','⚛️','#6a1fa0'],[5e4,'Beyond','✨','#151a40']];
+const MS=[10,25,50,100,150,200,300],SU=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
+const def=()=>({ore:0,total:0,life:0,lv:{},up:{},ab:{},gu:{},gems:0,gl:0,ach:{},clicks:0,nug:0,resets:0,maxD:0,play:0,t:Date.now(),mode:1});
+let s=def(),fr=0,cf=0,od=0,last=Date.now();
+try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&typeof d.ore==='number')s=Object.assign(def(),d)}catch(e){}
+function F(n){if(!isFinite(n))return'∞';if(n<1e3)return n<10&&n%1?n.toFixed(1):''+Math.floor(n);let i=0;while(n>=1e3&&i<SU.length-1){n/=1e3;i++}if(n>=1e3)return n.toExponential(2);return(n<10?n.toFixed(2):n<100?n.toFixed(1):Math.floor(n))+SU[i]}
+const lvl=k=>s.lv[k]||0,gu=k=>s.gu[k]||0,gm=i=>2**(MS.filter(m=>lvl('g'+i)>=m).length+upc('g',i));
+const depth=()=>Math.floor(Math.pow(s.total,.35)),need=d=>Math.pow(d,1/.35);
+const li=()=>{const d=depth();let k=0;L.forEach((l,i)=>{if(d>=l[0])k=i});return k};
+const glob=()=>(1+li()*.5)*(1+.05*s.gl)*(1+.02*Object.keys(s.ach).length)*1.15**upc('a')*(1+.02*gu('h9'))*(Date.now()<od?3:1)*(Date.now()<fr?7:1);
+function ps(){let t=0;G.forEach((g,i)=>t+=lvl('g'+i)*g.r*gm(i));return t*glob()*(1+.25*gu('h2'))*(1+.03*lvl('oc'))}
+const click=()=>(1+1.5*lvl('pick'))*(1+.5*gu('h1'))*(1+.1*lvl('glv'))*2**upc('c')*(Date.now()<cf?20:1)*glob()+ps()*(.02+.01*lvl('lan'));
+function add(x){s.ore+=x;s.total+=x;s.life+=x}
+const T=[{k:'pick',n:'Pickaxe',e:'⛏️',cost:l=>Math.ceil(10*1.6**l),d:()=>'+1.5 base dig power'},{k:'auto',n:'Auto Digger',e:'🤖',max:20,cost:l=>Math.ceil(2e3*2.4**l),d:()=>'Digs '+lvl('auto')+' times per second for you'},{k:'crit',n:'Lucky Strike',e:'🍀',max:25,cost:l=>Math.ceil(500*2.2**l),d:()=>'+2% chance of a ×5 dig (now '+2*lvl('crit')+'%)'}];
+T.push({k:'oc',n:'Overclock',e:'⚙️',max:25,cost:l=>Math.ceil(1e5*2.5**l),d:()=>'Miner output +3% per level'},{k:'fuse',n:'Short Fuse',e:'🧨',max:10,cost:l=>Math.ceil(1e4*3**l),d:()=>'Dynamite and Overdrive cooldowns −5% per level'},{k:'comp',n:'Golden Compass',e:'🧭',max:10,cost:l=>Math.ceil(5e4*3**l),d:()=>'Nuggets appear 5% sooner per level'});
+T.push({k:'glv',n:'Work Gloves',e:'🧤',max:30,cost:l=>Math.ceil(2e4*2.2**l),d:()=>'Dig power +10% per level'},{k:'lan',n:'Lantern',e:'🏮',max:20,cost:l=>Math.ceil(1e6*2.6**l),d:()=>'Each dig also earns +1% of your per-second output per level'},{k:'cap',n:'Time Capsule',e:'📦',max:10,cost:l=>Math.ceil(5e5*3**l),d:()=>'Offline earnings +5% per level'},{k:'chm',n:'Frenzy Charm',e:'🍀',max:10,cost:l=>Math.ceil(2e5*3**l),d:()=>'Frenzies last 10% longer per level'},{k:'fore',n:'Foreman',e:'🧑‍💼',max:1,cost:l=>5e7,d:()=>'Automatically buys the cheapest affordable miner (toggle in settings)'});
+const M=G.map((g,i)=>({k:'g'+i,n:g.n,e:g.e,cost:l=>Math.ceil(g.c*1.15**l),d:()=>{const nx=MS.find(m=>m>lvl('g'+i));return F(g.r*gm(i)*glob()*(1+.25*gu('h2')))+'/s each'+(nx?' · ×2 at '+nx:'')}}));
+const H=[{k:'h0',n:'Head Start',e:'🎒',max:20,cost:l=>Math.ceil(2*1.7**l),d:()=>'Runs start with '+F(2500*gu('h0')**2)+' ore (squares per level)'},{k:'h1',n:'Strong Arms',e:'💪',max:30,cost:l=>Math.ceil(3*1.9**l),d:()=>'+50% dig power per level'},{k:'h2',n:'Efficient Crew',e:'👷',max:30,cost:l=>Math.ceil(5*2**l),d:()=>'+25% miner output per level'},{k:'h3',n:'Lucky Finds',e:'🪙',max:5,cost:l=>Math.ceil(4*2.2**l),d:()=>'Nuggets appear 15% sooner per level'},{k:'h4',n:'Night Shift',e:'🌙',max:5,cost:l=>Math.ceil(6*2.5**l),d:()=>'Offline earnings '+(50+10*gu('h4'))+'% (+10% per level)'}];
+H.push({k:'h5',n:'Gem Magnet',e:'🧲',max:10,cost:l=>Math.ceil(8*2.3**l),d:()=>'+10% gems from Core Resets per level'},{k:'h6',n:'Lucky Digs',e:'🎲',max:10,cost:l=>Math.ceil(10*2.2**l),d:()=>'+2% crit chance per level'});
+H.push({k:'h7',n:'Apprentices',e:'🎓',max:10,cost:l=>Math.ceil(12*2**l),d:()=>'Start each run with '+10*gu('h7')+' free Interns'},{k:'h8',n:'Dynamite Fuel',e:'🛢️',max:10,cost:l=>Math.ceil(15*2**l),d:()=>'Dynamite pays +25% more per level'},{k:'h9',n:'Gem Wealth',e:'💰',max:20,cost:l=>Math.ceil(20*1.8**l),d:()=>'Everything +2% per level'});
+H.forEach(h=>h.gem=1);const ALL=[...M,...T,...H];
+const rowH=it=>`<div class="row"><div class="i" id="i_${it.k}">${it.e}</div><div class="t"><b id="n_${it.k}">${it.n}</b> <span class="lv" id="l_${it.k}"></span><small id="d_${it.k}"></small></div><button class="b" id="b_${it.k}" data-k="${it.k}"></button></div>`;
+$('p0').innerHTML=M.map(rowH).join('');$('p1').innerHTML=T.map(rowH).join('');$('p2r').innerHTML=H.map(rowH).join('');
+const A=[['o1','First Haul','Mine 1K ore',()=>s.life>=1e3],['o2','Millionaire','Mine 1M ore',()=>s.life>=1e6],['o3','Billionaire','Mine 1B ore',()=>s.life>=1e9],['o4','Trillionaire','Mine 1T ore',()=>s.life>=1e12],['o5','Quadrillionaire','Mine 1Qa ore',()=>s.life>=1e15],
+['d1','Going Down','Reach 100 m',()=>s.maxD>=100],['d2','Deep Diver','Reach 1,000 m',()=>s.maxD>=1e3],['d3','Abyss Walker','Reach 10,000 m',()=>s.maxD>=1e4],['d4','Core Breaker','Reach 30,000 m',()=>s.maxD>=3e4],
+['c1','Blister','Dig 100 times',()=>s.clicks>=100],['c2','Hard Worker','Dig 1,000 times',()=>s.clicks>=1e3],['c3','Iron Hands','Dig 10,000 times',()=>s.clicks>=1e4],
+['n1','Shiny!','Catch a nugget',()=>s.nug>=1],['n2','Gold Rush','Catch 10 nuggets',()=>s.nug>=10],
+['r1','Fresh Start','Do a Core Reset',()=>s.resets>=1],['r2','Veteran','Reset 5 times',()=>s.resets>=5],['r3','Legend','Reset 20 times',()=>s.resets>=20],
+['m1','Small Business','Own 50 of one miner',()=>G.some((g,i)=>lvl('g'+i)>=50)],['m2','Full Crew','Own every miner type',()=>G.every((g,i)=>lvl('g'+i)>=1)],
+['g1','Gem Collector','Earn 25 gems total',()=>s.gl>=25],['g2','Gem Hoarder','Earn 100 gems total',()=>s.gl>=100],['u1','Upgrader','Own 10 boosts',()=>Object.keys(s.up).length>=10],['u2','Fully Loaded','Own 30 boosts',()=>Object.keys(s.up).length>=30],['b1','Demolition','Use Dynamite 10 times',()=>(s.dyn||0)>=10],['m3','Ant Farm','Own 500 miners',()=>G.reduce((a,g,i)=>a+lvl('g'+i),0)>=500],['m4','Ant Colony','Own 2,000 miners',()=>G.reduce((a,g,i)=>a+lvl('g'+i),0)>=2e3],['o6','Sextillionaire','Mine 1Sx ore',()=>s.life>=1e18],['o7','Beyond Counting','Mine 1Sp ore',()=>s.life>=1e21],['r4','Eternal','Reset 50 times',()=>s.resets>=50],['g3','Gem Dragon','Earn 500 gems total',()=>s.gl>=500],['g4','Gem God','Earn 1,000 gems total',()=>s.gl>=1e3],['b2','Pyromaniac','Use Dynamite 50 times',()=>(s.dyn||0)>=50],['c4','Carpal Tunnel','Dig 100,000 times',()=>s.clicks>=1e5],['n3','Nugget Hunter','Catch 50 nuggets',()=>s.nug>=50],['n4','Nugget Tycoon','Catch 100 nuggets',()=>s.nug>=100],['q1','Contractor','Finish 10 quests',()=>(s.qd||0)>=10],['q2','Boss of Quests','Finish 50 quests',()=>(s.qd||0)>=50],['u3','Boost Baron','Own 75 boosts',()=>Object.keys(s.up).length>=75]];
+$('p3r').innerHTML=A.map(a=>`<div id="t_${a[0]}"><b>🏆 ${a[1]}</b>${a[2]}</div>`).join('');
+const UP=[];
+G.forEach((g,i)=>[[1,10],[10,100],[25,1e3],[50,1e4],[100,1e5]].forEach((a,j)=>UP.push({id:'m'+i+j,t:'g',i,e:g.e,n:g.n+' Training '+['I','II','III','IV','V'][j],d:g.n+' output ×2',cost:g.c*a[1],ok:()=>lvl('g'+i)>=a[0]})));
+[50,250,1e3,5e3,2e4,5e4,1e5,3e5,1e6].forEach((n,j)=>UP.push({id:'c'+j,t:'c',e:'⛏️',n:['Reinforced Pickaxe','Carbide Tips','Ergonomic Grip','Diamond Edge','Quantum Pick','Pick of Ages','Mythril Tip','Titan Grip','Pick of Gods'][j],d:'Dig power ×2',cost:500*100**j,ok:()=>s.clicks>=n}));
+['Hard Hats','Union Contract','Mining Permits','Insurance Fraud','Cosmic Charter','Black Market','Dimensional Rift','Mine of Mines'].forEach((n,j)=>UP.push({id:'a'+j,t:'a',e:'📜',n,d:'Everything ×1.15',cost:5e3*1e3**j,ok:()=>s.life>=1e4*1e3**j}));
+const upc=(t,i)=>UP.filter(u=>s.up[u.id]&&u.t===t&&(i==null||u.i===i)).length;
+const upv=()=>UP.filter(u=>!s.up[u.id]&&u.ok()).sort((a,b)=>a.cost-b.cost);
+function buyU(id){const u=UP.find(x=>x.id===id);if(u&&!s.up[id]&&u.ok()&&s.ore>=u.cost){s.ore-=u.cost;s.up[id]=1;beep(740,.1)}}
+function ups(){const v=upv(),sh=v.slice(0,20),k=sh.map(u=>u.id+(s.ore>=u.cost?1:0)).join(',')+'|'+v.length;
+ if(k!==ups._k){ups._k=k;$('p5r').innerHTML=sh.length?sh.map(u=>`<div class="row"><div class="i">${u.e}</div><div class="t"><b>${u.n}</b><small>${u.d}</small></div><button class="b" data-u="${u.id}" ${s.ore>=u.cost?'':'disabled'}>${F(u.cost)}</button></div>`).join(''):'<div class="row"><div class="t"><small>No boosts yet. Keep digging and buying miners to unlock more.</small></div></div>'}
+ const n=v.filter(u=>s.ore>=u.cost).length;$('ubd').textContent=n?' '+n:'';$('uinfo').textContent=v.length+' available · '+Object.keys(s.up).length+'/'+UP.length+' owned'}
+const locked=i=>i>=10&&!lvl('g'+i)&&lvl('g'+(i-1))<5,isM=k=>/^g\d+$/.test(k);
+function quote(it){const l=(it.gem?s.gu:s.lv)[it.k]||0,have=it.gem?s.gems:s.ore,mx=s.mode==='max';let m=mx?1e3:s.mode,n=0,tot=0;
+ while(n<m&&(it.max==null||l+n<it.max)){const c=it.cost(l+n);if(mx&&n>0&&tot+c>have)break;tot+=c;n++}return{n,tot,have}}
+function buy(it){if(isM(it.k)&&locked(+it.k.slice(1)))return;const q=quote(it);if(!q.n||q.have<q.tot)return;const o=it.gem?s.gu:s.lv;if(it.gem)s.gems-=q.tot;else s.ore-=q.tot;o[it.k]=(o[it.k]||0)+q.n;beep(660,.08)}
+$('store').addEventListener('click',e=>{const qb=e.target.closest('button[data-q]');if(qb){claim(+qb.dataset.q);return}const ub=e.target.closest('button[data-u]');if(ub){buyU(ub.dataset.u);return}if(e.target.closest('#uall')){upv().forEach(u=>buyU(u.id));return}
+ const b=e.target.closest('button[data-k]');if(b){const it=ALL.find(x=>x.k===b.dataset.k);if(it)buy(it);return}
+ const m=e.target.closest('#mm button');if(m){s.mode=m.dataset.m==='max'?'max':+m.dataset.m;return}
+ const t=e.target.closest('#tabs button');if(t)tab(+t.dataset.t)});
+function tab(n){s.tab=n;[0,1,2,3,4,5].forEach(i=>$('p'+i).classList.toggle('on',i===n));[...$('tabs').children].forEach(b=>b.classList.toggle('on',+b.dataset.t===n))}
+function pop(t,x,y,c){if(document.querySelectorAll('.fl').length>20)return;const e=document.createElement('span');e.className='fl'+(c?' c':'');e.textContent=t;e.style.left=x+'px';e.style.top=y+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),800)}
+function dig(e){let v=click(),c=Math.random()<.02*(lvl('crit')+gu('h6'));if(c)v*=5;add(v);s.clicks++;beep(c?520:170+Math.random()*50,c?.15:.05);const r=$('dig').getBoundingClientRect(),k=e&&e.clientX;
+ pop((c?'CRIT +':'+')+F(v),k?e.clientX:r.left+r.width/2,k?e.clientY:r.top+30,c);if(Math.random()<.35)pop(L[li()][2],(k?e.clientX:r.left+r.width/2)+(Math.random()-.5)*100,k?e.clientY:r.top+30)}
+$('dig').addEventListener('click',dig);
+addEventListener('keydown',e=>{if(e.code==='Space'&&!/TEXTAREA|INPUT/.test(e.target.tagName)){e.preventDefault();if(!e.repeat)dig(e)}});
+addEventListener('keyup',e=>{if(e.code==='Space'&&!/TEXTAREA|INPUT/.test(e.target.tagName))e.preventDefault()});
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),3500)}
+function arm(b,fn){if(b._a){clearTimeout(b._t);b._a=0;fn();return}b._a=1;b._t=setTimeout(()=>{b._a=0},3000)}
+const gain=()=>Math.floor(Math.sqrt(s.total/1e5)*(1+.1*gu('h5')));
+$('pr').onclick=()=>arm($('pr'),()=>{const g=gain();if(g<1)return;s.gems+=g;s.gl+=g;s.resets++;s.lv={g0:10*gu('h7')};s.up={};s.ore=s.total=2500*gu('h0')**2;toast('Core Reset! +'+g+' 💎')});
+$('rs').onclick=()=>{const b=$('rs');if(!b._a){b.textContent='Tap to confirm';setTimeout(()=>{b.textContent='Reset'},3000)}arm(b,()=>{const m=s.mode;s=def();s.mode=m;b.textContent='Reset';applyTheme();sset();toast('Save wiped')})};
+function save(){s.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function nug(){const b=document.createElement('button');b.id='nug';b.textContent='🪙';b.style.left=(5+Math.random()*85)+'vw';b.style.top=(12+Math.random()*70)+'vh';
+ b.onclick=()=>{s.nug++;const r=Math.random();if(r<.4){const x=ps()*60+click()*50;add(x);toast('🪙 Golden nugget! +'+F(x)+' ore')}else if(r<.7){fr=Math.max(Date.now(),fr)+2e4*(1+.1*lvl('chm'));toast('🔥 Frenzy! Everything ×7 for 20 seconds')}else{cf=Math.max(Date.now(),cf)+1e4*(1+.1*lvl('chm'));toast('👆 Click Frenzy! Dig power ×20 for 10 seconds')}b.remove()};
+ document.body.appendChild(b);setTimeout(()=>b.remove(),12000)}
+(function sched(){setTimeout(()=>{if(!document.getElementById('nug'))nug();sched()},(4e4+Math.random()*5e4)*.85**gu('h3')*.95**lvl('comp'))})();
+const hm=t=>{t=Math.floor(t);return Math.floor(t/3600)+'h '+Math.floor(t%3600/60)+'m'};
+function ui(){
+ const k=li(),l=L[k],nx=L[k+1],d=depth(),g=gain(),now=Date.now();
+ $('ore').textContent=F(s.ore);$('dep').textContent=F(d);$('ps').textContent=F(ps());$('gem').textContent=s.gems;
+ const fp=[];if(now<fr)fp.push('🔥 Frenzy ×7 · '+Math.ceil((fr-now)/1e3)+'s');if(now<cf)fp.push('👆 Click ×20 · '+Math.ceil((cf-now)/1e3)+'s');if(now<od)fp.push('⚡ Overdrive ×3 · '+Math.ceil((od-now)/1e3)+'s');$('fz').style.display=fp.length?'block':'none';$('fz').innerHTML=fp.join('<br>');
+ $('mine').style.setProperty('--lc',l[3]);$('de').textContent=l[2];$('lay').textContent=l[1]+' layer';$('sub').textContent='Layer '+(k+1)+'/'+L.length+' · everything ×'+(1+k*.5);
+ $('cp').textContent='+'+F(click())+' per dig';
+ if(nx){const a=need(l[0]),b=need(nx[0]);$('nb').style.width=Math.max(0,Math.min(100,(s.total-a)/(b-a)*100))+'%';$('nl').textContent='Next: '+nx[1]+' at '+F(nx[0])+' m'}else{$('nb').style.width='100%';$('nl').textContent='You reached the deepest layer!'}
+ $('pr').textContent=$('pr')._a?'Tap again to confirm reset':'Core Reset (+'+g+' 💎)';$('pr').disabled=g<1;
+ $('pi').textContent=g<1?'Reach 100K total ore this run to unlock Core Reset. It restarts your run for gems.':'Resets ore, miners, tools and boosts. You keep gems, gem upgrades and trophies.';
+ $('stats').innerHTML='Digs '+s.clicks+' · Nuggets '+s.nug+' · Resets '+s.resets+'<br>Best depth '+F(s.maxD)+' m · Lifetime ore '+F(s.life)+' · Played '+hm(s.play);
+ [...$('mm').children].forEach(b=>b.classList.toggle('on',b.dataset.m===''+s.mode));
+ ALL.forEach(it=>{const l=(it.gem?s.gu:s.lv)[it.k]||0,q=quote(it),b=$('b_'+it.k),lk=isM(it.k)&&locked(+it.k.slice(1));
+  $('i_'+it.k).style.filter=lk?'brightness(0) drop-shadow(0 0 2px #fff7)':'';$('n_'+it.k).textContent=lk?'Locked':it.n;
+  if(lk){$('l_'+it.k).textContent='';$('d_'+it.k).textContent='';b.textContent='🔒';b.disabled=true;b._h='';return}
+  $('l_'+it.k).textContent='Lv '+l+(it.max?'/'+it.max:'');$('d_'+it.k).textContent=it.d();
+  const maxed=it.max!=null&&l>=it.max,h=maxed?'MAX':F(q.tot)+(it.gem?' 💎':'')+(q.n>1?'<small> ×'+q.n+'</small>':'');
+  if(b._h!==h){b.innerHTML=h;b._h=h}b.disabled=maxed||q.have<q.tot});
+ A.forEach(a=>$('t_'+a[0]).classList.toggle('got',!!s.ach[a[0]]));ups();qui();
+ const r1=Math.ceil(((s.ab.d||0)-now)/1e3),r2=Math.ceil(((s.ab.o||0)-now)/1e3);
+ $('ab1').textContent=r1>0?'💥 Dynamite · '+r1+'s':'💥 Dynamite (D)';$('ab1').disabled=r1>0;
+ $('ab2').textContent=now<od?'⚡ Active · '+Math.ceil((od-now)/1e3)+'s':r2>0?'⚡ Overdrive · '+r2+'s':'⚡ Overdrive (O)';$('ab2').disabled=r2>0}
+const off=(Date.now()-s.t)/1e3;
+if(off>30&&ps()>0){const e=ps()*Math.min(off,28800)*(.5+.1*gu('h4')+.05*lvl('cap'));add(e);setTimeout(()=>toast('Welcome back! Your crew mined '+F(e)+' ore while you were away ('+hm(off)+').'),400)}
+setInterval(()=>{const n=Date.now(),dt=Math.min(600,Math.max(0,(n-last)/1e3))*tm;last=n;add(ps()*dt+click()*lvl('auto')*dt);s.play+=dt;s.maxD=Math.max(s.maxD,depth());ui()},100);
+setInterval(()=>{G.forEach((g,i)=>{const l=locked(i);if(wasL[i]&&!l)toast('🔓 New miner unlocked: '+g.n);wasL[i]=l});A.forEach(a=>{if(!s.ach[a[0]]&&a[3]()){s.ach[a[0]]=1;toast('🏆 '+a[1]+' · +2% to everything');beep(880,.25)}});save()},2000);
+addEventListener('beforeunload',save);document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
+let ac,tm=1;const wasL={};G.forEach((g,i)=>wasL[i]=locked(i));
+function beep(f,d){if(!s.snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.04;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(1e-4,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+const TH=['auto','dark','light'];
+function applyTheme(){const x=s.th||'auto';if(x==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=x}
+function sset(){$('sn').textContent=s.snd?'On':'Off';$('th').textContent=(s.th||'auto')[0].toUpperCase()+(s.th||'auto').slice(1);const d=!!s.dev;$('dv').style.display=d?'grid':'none';$('dvh').style.display=d?'block':'none';$('dcr').style.display=d?'none':'flex'}
+$('sn').onclick=()=>{s.snd=!s.snd;sset();beep(660,.1)};
+$('th').onclick=()=>{s.th=TH[(TH.indexOf(s.th||'auto')+1)%3];applyTheme();sset()};
+const DV=[['+1M ore',()=>add(1e6)],['+1T ore',()=>add(1e12)],['Ore ×1000',()=>add(s.ore*999)],['+100 💎',()=>{s.gems+=100;s.gl+=100}],['Next layer',()=>{const n=L[li()+1];if(n)s.total=Math.max(s.total,need(n[0])+1)}],['Warp +1 hour',()=>add(ps()*3600)],['Spawn nugget',()=>{if(!$('nug'))nug()}],['Frenzy 60s',()=>{fr=Math.max(Date.now(),fr)+6e4}],['Speed ×10',()=>{tm=tm===1?10:1;toast('Game speed ×'+tm)}],['All trophies',()=>A.forEach(a=>s.ach[a[0]]=1)],['Miners to Lv 100',()=>G.forEach((g,i)=>s.lv['g'+i]=Math.max(lvl('g'+i),100))],['Reset cooldowns',()=>{s.ab={}}],['Own all boosts',()=>UP.forEach(u=>s.up[u.id]=1)],['Finish quests',()=>(s.q||[]).forEach(q=>q.s0-=q.n+1)],['Lock dev tools',()=>{s.dev=0;tm=1;sset()}]];
+$('dv').innerHTML=DV.map((d,i)=>`<button class="b2" data-i="${i}">${d[0]}</button>`).join('');
+$('dv').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&s.dev)DV[+b.dataset.i][1]()});
+$('du').onclick=()=>{if($('dc').value.trim()==='peelertere'){s.dev=1;$('dc').value='';sset();toast('Developer tools unlocked')}else toast('Wrong code')};
+$('dc').addEventListener('keydown',e=>{if(e.key==='Enter')$('du').click()});
+$('ab1').onclick=()=>{const n=Date.now();if((s.ab.d||0)>n)return;s.ab.d=n+12e4*(1-.05*lvl('fuse'));s.dyn=(s.dyn||0)+1;const x=(ps()*300+click()*100)*(1+.25*gu('h8'));add(x);toast('💥 Dynamite! +'+F(x)+' ore');beep(110,.4)};
+$('ab2').onclick=()=>{const n=Date.now();if((s.ab.o||0)>n)return;s.ab.o=n+18e4*(1-.05*lvl('fuse'));od=n+15e3;toast('⚡ Overdrive! Everything ×3 for 15 seconds');beep(990,.2)};
+addEventListener('keydown',e=>{if(/TEXTAREA|INPUT/.test(e.target.tagName)||e.repeat)return;if(e.code==='KeyD')$('ab1').click();if(e.code==='KeyO')$('ab2').click()});
+function news(){const k=li(),a=['The foreman says: "dig faster."','A mole files a complaint about unfair competition.','Breaking: the ground is still hard.','Scientists confirm: the deeper you go, the deeper it gets.','Interns demand a lunch break. Request denied.','Your crew has mined '+F(s.life)+' ore so far. Experts are mildly impressed.',L[k][1]+' layer: rock quality "adequate".','Depth '+F(depth())+' m. The surface is a distant memory.'];
+ if(lvl('g0')>20)a.push('The Intern union has formed. Negotiations are going poorly.');if(ps()>1e6)a.push('Economists baffled by ore inflation.');if(s.resets)a.push('The Core whispers: "come back stronger."');if(s.clicks>1000)a.push('Your finger has filed for workers\' compensation.');if(Date.now()<fr)a.push('The nuggets are going wild!');
+ const e=$('news');e.style.opacity=0;setTimeout(()=>{e.textContent=a[Math.floor(Math.random()*a.length)];e.style.opacity=1},400)}
+setInterval(news,9000);news();
+const stat=k=>k==='dig'?s.clicks:k==='ore'?s.life:k==='nug'?s.nug:(s.dyn||0),pk=a=>a[Math.floor(Math.random()*a.length)];
+function newQ(){const k=pk(['dig','dig','ore','ore','nug','dyn']),q={t:k,s0:stat(k)};q.n=k==='dig'?pk([100,200,400,800]):k==='ore'?Math.max(1e4,ps()*pk([300,600,1200])):k==='nug'?pk([1,1,2]):1;q.g=Math.random()<.4?1+Math.floor(Math.random()*4):0;return q}
+const qtx=q=>q.t==='dig'?'Dig '+F(q.n)+' times':q.t==='ore'?'Earn '+F(q.n)+' ore':q.t==='nug'?'Catch '+q.n+' golden nugget'+(q.n>1?'s':''):'Use Dynamite';
+$('p6r').innerHTML=[0,1,2].map(i=>`<div class="row"><div class="i">📋</div><div class="t"><b id="qt${i}"></b><small id="qp${i}"></small></div><button class="b" data-q="${i}" id="qb${i}">Claim</button></div>`).join('');
+$('p6r').addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(b)claim(+b.dataset.q)});
+function qui(){if(!Array.isArray(s.q))s.q=[];while(s.q.length<3)s.q.push(newQ());let n=0;
+ s.q.forEach((q,i)=>{const c=Math.max(0,Math.min(q.n,stat(q.t)-q.s0));if(c>=q.n)n++;$('qt'+i).textContent=qtx(q);$('qp'+i).textContent=F(c)+' / '+F(q.n)+' · Reward: '+(q.g?q.g+' 💎':'ore (10 min of mining)');$('qb'+i).disabled=c<q.n});
+ $('qinfo').textContent='Completed: '+(s.qd||0);$('fm').textContent=lvl('fore')?(s.am===0?'Off':'On'):'Locked';$('fm').disabled=!lvl('fore')}
+function claim(i){const q=s.q&&s.q[i];if(!q||stat(q.t)-q.s0<q.n)return;if(q.g){s.gems+=q.g;toast('📋 Quest done! +'+q.g+' 💎')}else{const x=ps()*600+click()*100;add(x);toast('📋 Quest done! +'+F(x)+' ore')}s.qd=(s.qd||0)+1;s.q[i]=newQ();beep(880,.15)}
+$('fm').onclick=()=>{if(lvl('fore'))s.am=s.am===0?1:0};
+setInterval(()=>{if(!lvl('fore')||s.am===0)return;for(let n=0;n<3;n++){let b=null,bc=1/0;M.forEach((it,i)=>{if(locked(i))return;const c=it.cost(lvl(it.k));if(c<bc){bc=c;b=it}});if(b&&bc<=s.ore*.3){s.ore-=bc;s.lv[b.k]=lvl(b.k)+1}else break}},2000);
+applyTheme();sset();tab(0);ui();
+</script></body></html>
